@@ -17,28 +17,31 @@ lines = tk.Text(root)
 footer = tk.Label(root)
 
 # Variables declaration
-defaultConfig = {'rootGeometry': '1600x900',
-        'rootFullscreen': False, 
-        'textBg': 'black', 
-        'textFg': 'white', 
-        'textFont': 'Consolas', 
-        'textFontSize': 16, 
-        'textRelief': 'flat',
-        'insertColor': 'white',
-        'insertWidth': 3,
-        'linesOnLeft': True,
-        'linesBg': 'white', 
-        'linesFg': 'black',
-        'linesRelief': 'flat',
-        'enableFooter': True, 
-        'footerBg': 'white',
-        'footerFg': 'black', 
-        'footerFont': 'Consolas', 
-        'footerFontSize': 16, 
-        'footerRelief': 'flat',
-        'footerText': ['cursorPos', 'systemTime', 'openedFile', 'logMessage', 'appVersion'],
-        'footerTextSeparator': ' | ',
-        'footerTimeFormat': '%A %x %X'}
+defaultConfig = {
+    'rootGeometry': '1600x900',
+    'rootFullscreen': False, 
+    'textBg': 'black', 
+    'textFg': 'white', 
+    'textFont': 'Consolas', 
+    'textFontSize': 16, 
+    'textRelief': 'flat',
+    'insertColor': 'white',
+    'insertWidth': 3,
+    'linesOnLeft': True,
+    'linesBg': 'white', 
+    'linesFg': 'black',
+    'linesRelief': 'flat',
+    'enableFooter': True, 
+    'footerBg': 'white',
+    'footerFg': 'black', 
+    'footerFont': 'Consolas', 
+    'footerFontSize': 16, 
+    'footerRelief': 'flat',
+    'footerText': ['cursorPos', 'systemTime', 'openedFile', 'logMessage', 
+                   'appVersion'],
+    'footerTextSeparator': ' | ',
+    'footerTimeFormat': '%A %x %X'
+}
 userConfig = defaultConfig.copy()
 
 linesCount = 1

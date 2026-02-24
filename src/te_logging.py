@@ -5,7 +5,7 @@ import os.path
 logsDir: str = "logs"
 os.makedirs(logsDir, exist_ok=True)
 
-logFilename: str = datetime.today().strftime("log_%y-%m-%d.txt")
+logFilename: str = datetime.now().strftime("log_%y-%m-%d_%H-%M-%S.txt")
 logPath: str = os.path.join(logsDir, logFilename)
 
 def error(msg: str):

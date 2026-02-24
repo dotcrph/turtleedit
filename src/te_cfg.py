@@ -2,10 +2,13 @@ import te_io as io
 import te_logging as log
 
 import json
-from os.path import exists
+import os.path
 from typing import Any
 
-configDir = "data/config.json"
+configDir = "data"
+configFilename = "config.json"
+configPath = os.path.join(configDir, configFilename)
+
 userConfig: dict[str, Any] = dict()
 defaultConfig = {
     "root": {
@@ -57,7 +60,7 @@ appVersion = "turtleEdit 2.0.0"
 def setupConfig():
     global config
 
-    if exists(configDir):
+    if os.path.exists(configPath):
         readConfig()
     else:
         createConfigFile()
@@ -66,10 +69,10 @@ def readConfig() -> None:
     global userConfig
 
     try:
-        with open(configDir, "r", encoding="utf-8") as configFile:
+        with open(configPath, "r", encoding="utf-8") as configFile:
             userConfig = json.load(configFile)
     except json.JSONDecodeError as e:
-        log.error(f"Failed to encode JSON config file {configDir}! ({e})")
+        log.error(f"Failed to encode JSON config file {configPath}! ({e})")
     except Exception as e:
         if isinstance(e, tuple(io.ioErrors.keys())):
             log.error(io.ioErrors[type(e)].format(configDir) 
@@ -79,32 +82,54 @@ def readConfig() -> None:
             raise
 
 def createConfigFile() -> None:
-    with open(configDir, "w", encoding="utf-8") as configFile:
+    os.makedirs(configDir, exist_ok=True)
+
+    with open(configPath, "w", encoding="utf-8") as configFile:
         json.dump(defaultConfig, configFile, indent=4)
+
+    log.info(f"Created {configPath}")
 
 def get(expectedType: type, *keys: str) -> Any | None:
     keyPath = ".".join(keys)
 
-    key = ""
-    value = None
+    # Check user config
+    value = userConfig
 
     for key in keys:
-        if key in userConfig:
-            value = userConfig[key]
-            continue
+        if key not in value:
+            break
 
-        if key in defaultConfig:
-            value = defaultConfig[key]
-            continue
-        
-        log.error(f"Could not find config key {key} in {keyPath}")
-        return None
+        if (key != keys[-1] and not isinstance(value, dict)):
+            log.error(f"Value {key} in {keyPath} in user config is not a dictionary!")
+            return None
 
-    if (not isinstance(value, expectedType)):
-        log.error(f"Value {keyPath} is of type {type(value)}, expected {expectedType}")
-        return None
+        value = value[key]
+    else:
+        if (isinstance(value, expectedType)):
+            return value
 
-    return value
+    # Check default config
+    value = defaultConfig
+
+    for key in keys:
+        if key not in value:
+            break
+
+        if (key != keys[-1] and not isinstance(value, dict)):
+            log.error(f"Value {key} in {keyPath} in default config is not a dictionary!")
+            return None
+
+        value = value[key]
+    else:
+        if (not isinstance(value, expectedType)):
+            log.error(f"Value {keyPath} in user config file is of type {type(value)}, expected {expectedType}")
+            return None
+
+        return value
+
+    log.error(f"Could not find {key} in {keyPath} in config!")
+    return None
+
 
 if __name__ == "__main__":
     setupConfig()

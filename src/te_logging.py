@@ -13,6 +13,9 @@ lastLogMessage = ""
 def error(msg: str):
     prefix("ERROR", msg)
 
+def warn(msg: str):
+    prefix("WARNING", msg)
+
 def info(msg: str):
     prefix("Info", msg)
 

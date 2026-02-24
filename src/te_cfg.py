@@ -89,7 +89,7 @@ def createConfigFile() -> None:
 
     log.info(f"Created {configPath}")
 
-def get(expectedType: type, *keys: str) -> Any | None:
+def get(expectedType: type, *keys: str) -> Any:
     keyPath = ".".join(keys)
 
     # Check user config

@@ -100,8 +100,8 @@ def get(expectedType: type, *keys: str) -> Any:
             break
 
         if (key != keys[-1] and not isinstance(value, dict)):
-            log.error(f"Value {key} in {keyPath} in user config is not a dictionary!")
-            return None
+            log.warn(f"Value {key} in {keyPath} in user config is not a dictionary!")
+            break
 
         value = value[key]
     else:

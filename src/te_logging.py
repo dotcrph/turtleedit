@@ -15,7 +15,7 @@ def info(msg: str):
     prefix("Info", msg)
 
 def prefix(prefix: str, msg: str):
-    time: str = datetime.now().strftime("%H-%M-%S")
+    time: str = datetime.now().strftime("%H:%M:%S")
 
     with open(logPath, "a", encoding="utf-8") as f:
         f.write(f"({time}) [{prefix}] {msg}\n")

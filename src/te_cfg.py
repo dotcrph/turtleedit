@@ -10,8 +10,8 @@ jsonT = dict[str, "jsonT"] | list["jsonT"] | str | int | float | bool | None
 
 config: dict[str, jsonT] = {
     "root": {
-        "width": 1600,
-        "height": 900,
+        "width": 800,
+        "height": 600,
         "fullscreen": False
     },
 

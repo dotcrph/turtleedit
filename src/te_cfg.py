@@ -4,19 +4,9 @@ import te_logging as log
 import json
 import os.path
 from collections import deque
-from enum import Enum
 from typing import Literal, overload
 
-class lineNumbersPositions(Enum):
-    NONE    = -1,
-    LEFT    = 0,
-    RIGHT   = 1,
-
 jsonT = dict[str, "jsonT"] | list["jsonT"] | str | int | float | bool | None
-
-configDir: str      = "data"
-configFilename: str = "config.json"
-configPath: str     = os.path.join(configDir, configFilename)
 
 config: dict[str, jsonT] = {
     "root": {
@@ -26,46 +16,20 @@ config: dict[str, jsonT] = {
     },
 
     "insert": {
-        "bgColor": "#000000",
-        "fgColor": "#ffffff",
-        "relief": "flat",
-        "font": "Consolas",
-        "fontSize": 16
+        "bg": "#000000",
+        "fg": "#ffffff",
+        "fontSize": 22
     },
 
     "caret": {
         "color": "#85CB33",
         "width": 3
-    },
-
-    "lineNumbers": {
-        "position": "left",
-        "bgColor": "#000000",
-        "fgColor": "#3d3d3d",
-        "relief": "flat"
-    },
-
-    "footer": {
-        "enabled": True,
-        "bgColor": "#85CB33",
-        "fgColor": "#000000",
-        "relief": "flat",
-        "font": "Consolas",
-        "fontSize": 16,
-        "items": ["position", "time", "filename", "log", "appinfo"],
-        "separator": " | "
-    },
-
-    "footerItems" : {
-        "time": {
-            "format": "%A %x %X"
-        }
     }
 }
 
 appVersion: str = "turtleEdit 2.0.0"
 
-def setupConfig() -> None:
+def loadConfig(configPath: str) -> None:
     """
     Tries to open a JSON file located in configDir and if the file exists
     adds/replaces entries in config dictionary

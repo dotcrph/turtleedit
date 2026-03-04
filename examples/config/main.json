@@ -1,0 +1,18 @@
+{
+    "root": {
+        "width": 800,
+        "height": 600,
+        "fullscreen": false
+    },
+
+    "insert": {
+        "bg": "#000000",
+        "fg": "#ffffff",
+        "fontSize": 22
+    },
+
+    "caret": {
+        "color": "#85CB33",
+        "width": 3
+    }
+}

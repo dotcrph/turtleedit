@@ -1,0 +1,5 @@
+[tool.basedpyright]
+# Some of tkinter functions (i.e. confugure()) are used 
+# purely for their side effects but return some value and 
+# that results in a lot of redundant warnings
+reportUnusedCallResult = "none"

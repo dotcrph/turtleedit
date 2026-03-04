@@ -24,5 +24,9 @@ def prefix(prefix: str, msg: str):
     lastLogMessage = f"[{prefix}] {msg}"
 
     time: str = datetime.now().strftime("%H:%M:%S")
+
+    logMsgWithTime: str = f"({time}) {lastLogMessage}"
+
+    print(logMsgWithTime)
     with open(logPath, "a", encoding="utf-8") as f:
-        f.write(f"({time}) " + lastLogMessage + "\n")
+        f.write(logMsgWithTime + "\n")

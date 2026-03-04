@@ -3,14 +3,22 @@ import te_logging as log
 
 import json
 import os.path
-from typing import Any
+from collections import deque
+from enum import Enum
+from typing import Literal, overload
 
-configDir = "data"
-configFilename = "config.json"
-configPath = os.path.join(configDir, configFilename)
+class lineNumbersPositions(Enum):
+    NONE    = -1,
+    LEFT    = 0,
+    RIGHT   = 1,
 
-userConfig: dict[str, Any] = dict()
-defaultConfig = {
+jsonT = dict[str, "jsonT"] | list["jsonT"] | str | int | float | bool | None
+
+configDir: str      = "data"
+configFilename: str = "config.json"
+configPath: str     = os.path.join(configDir, configFilename)
+
+config: dict[str, jsonT] = {
     "root": {
         "width": 1600,
         "height": 900,
@@ -55,82 +63,165 @@ defaultConfig = {
     }
 }
 
-appVersion = "turtleEdit 2.0.0"
+appVersion: str = "turtleEdit 2.0.0"
 
-def setupConfig():
+def setupConfig() -> None:
+    """
+    Tries to open a JSON file located in configDir and if the file exists
+    adds/replaces entries in config dictionary
+    """
     global config
 
-    if os.path.exists(configPath):
-        readConfig()
-    else:
-        createConfigFile()
-
-def readConfig() -> None:
-    global userConfig
+    if not os.path.exists(configPath):
+        log.warn("Failed to find config in '{configPath}', using default config")
+        return
 
     try:
         with open(configPath, "r", encoding="utf-8") as configFile:
-            userConfig = json.load(configFile)
+            userConfig: dict[str, jsonT] = json.load(configFile)
+
+        objectsToRead: deque[
+            tuple[
+                list[str],        # Parent JSON object (aka dict) key path
+                dict[str, jsonT], # Correlated object from JSON file
+                dict[str, jsonT]  # Correlated object from config dict
+            ]
+        ] = deque()
+
+        # Pushing the root JSON object to stack. Path list is empty 
+        # because the root object does not have a parent object
+        objectsToRead.append(([], userConfig, config))
+
+        # Stack-based tree traversal algorithm 
+        while objectsToRead:
+            obj = objectsToRead.pop()
+
+            parentObjKeyPath: list[str]       = obj[0]
+            objFromJsonFile: dict[str, jsonT] = obj[1]
+            objFromConfig: dict[str, jsonT]   = obj[2]
+
+            for key in objFromJsonFile:
+                thisKeyPath: list[str] = parentObjKeyPath + [key]
+                thisKeyPathFormatted = ".".join(thisKeyPath)
+                value = objFromJsonFile[key]
+
+                if key not in objFromConfig:
+                    objFromConfig[key] = value
+                    continue
+
+                if not isinstance(value, type(objFromConfig[key])):
+                    log.warn(f"'{thisKeyPathFormatted}' in user config is not of expected type '{type(objFromConfig[key])}'; using default value")
+                    continue
+
+                if isinstance(value, dict):
+                    objectsToRead.append((
+                        thisKeyPath,
+                        objFromJsonFile[key],
+                        objFromConfig[key],
+                    ))
+                else:
+                    objFromConfig[key] = objFromJsonFile[key]
+
+        log.info("Finished loading config successfully")
+        return
     except json.JSONDecodeError as e:
-        log.error(f"Failed to encode JSON config file {configPath}! ({e})")
+        log.error(f"Failed to decode JSON config file {configPath}! ({e})")
+    except UnicodeDecodeError as e:
+        log.error(f"{configPath} is not a valid Unicode file! ({e})")
     except Exception as e:
         if isinstance(e, tuple(io.ioErrors.keys())):
             log.error(io.ioErrors[type(e)].format(configDir) 
                      + f"({e})")
-            return
         else:
             raise
 
-def createConfigFile() -> None:
-    os.makedirs(configDir, exist_ok=True)
+    log.info("Finished loading config with errors")
 
-    with open(configPath, "w", encoding="utf-8") as configFile:
-        json.dump(defaultConfig, configFile, indent=4)
+@overload
+def get[T](
+    expectedType: type[T] | tuple[type[T], ...],
+    *keys: str,
+    throw: Literal[True]
+) -> T: ...
 
-    log.info(f"Created {configPath}")
+@overload
+def get[T](
+    expectedType: type[T] | tuple[type[T], ...],
+    *keys: str,
+    throw: Literal[False]
+) -> T | None: ...
 
-def get(expectedType: type, *keys: str) -> Any:
+@overload
+def get[T](
+    expectedType: type[T] | tuple[type[T], ...],
+    *keys: str,
+    throw: bool = False
+) -> T | None: ...
+
+def get[T](
+    expectedType: type[T] | tuple[type[T], ...],
+    *keys: str,
+    throw: bool = False
+) -> T | None:
+    """
+    Gets a value from user config w/ fallback to default config if no value is 
+    found in user config. If no value is found in user and default configs 
+    either returns None if throw == False or raises a KeyError.
+
+    Args:
+        expectedType <type object or a tuple of type objects)>: expected type
+
+        keys <str, variadic>: key path to value in user config. For example, 
+            if you need to get 'footerItems.time.format', then keys is 
+            ("footerItems", "time", "format")
+
+    Returns:
+        <type of expectedType> if value exists either in user config or 
+        default config
+
+        None if throw == False value does not exist both in user and 
+        default configs
+
+    Errors:
+        KeyError if throw == True and value does not exist both in user 
+        and default configs
+    """
     keyPath = ".".join(keys)
 
-    # Check user config
-    value = userConfig
+    value = config
 
     for key in keys:
         if key not in value:
-            break
+            errormsg = f"'{key}' of '{keyPath}' is not in config!"
+            log.error(errormsg)
 
-        if (key != keys[-1] and not isinstance(value, dict)):
-            log.warn(f"Value {key} in {keyPath} in user config is not a dictionary!")
-            break
+            if throw:
+                raise KeyError(errormsg)
+
+            return None
+
+        if key != keys[-1] and not isinstance(value, dict):
+            errormsg = f"'{key}' of '{keyPath}' in config is not a JSON object!"
+            log.error(errormsg)
+
+            if throw:
+                raise KeyError(errormsg)
+
+            return None
 
         value = value[key]
     else:
-        if (isinstance(value, expectedType)):
+        if isinstance(value, expectedType):
             return value
 
-    # Check default config
-    value = defaultConfig
+        errormsg = f"'{keyPath}' in config is of type '{type(value)}', expected {expectedType}!"
+        log.error(errormsg)
 
-    for key in keys:
-        if key not in value:
-            break
+        if throw:
+            raise KeyError(errormsg)
 
-        if (key != keys[-1] and not isinstance(value, dict)):
-            log.error(f"Value {key} in {keyPath} in default config is not a dictionary!")
-            return None
-
-        value = value[key]
-    else:
-        if (not isinstance(value, expectedType)):
-            log.error(f"Value {keyPath} in user config file is of type {type(value)}, expected {expectedType}")
-            return None
-
-        return value
-
-    log.error(f"Could not find {key} in {keyPath} in config!")
-    return None
-
+        return None
 
 if __name__ == "__main__":
     setupConfig()
-    print(userConfig)
+    print(config)

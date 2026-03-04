@@ -1,111 +1,97 @@
+import te_api as api
 import te_cfg as cfg
 import te_logging as log
 
-import tkinter as tk
+import wx
+import wx.stc
+from os.path import isfile
 
-root = tk.Tk()
-text = tk.Text(root)
-lines = tk.Text(root)
-footer = tk.Label(root)
+app = wx.App(False)
+api.addToAPI("widgets", app)
 
-isFullscreen: bool = False
-textSize: int = 16
-textFont: str = "Courier New"
+frame = wx.Frame(None, title = cfg.appVersion)
+api.addToAPI("widgets", frame)
 
-lineNumPosStr: str = cfg.get(str, "lineNumbers", "position")
+panel = wx.Panel(frame)
+api.addToAPI("widgets", panel)
 
-lineNumPos: int = 0 if lineNumPosStr == "left" \
-                    else 1 if lineNumPosStr == "right" else -1
+grid = wx.GridBagSizer(vgap = 0, hgap = 0)
+api.addToAPI("widgets", grid)
 
-def setTitle(title: str):
-    root.title(title)
+insert = wx.stc.StyledTextCtrl(panel, style = wx.TE_MULTILINE)
+api.addToAPI("widgets", insert)
 
-def configure():
-    global isFullscreen, textSize
+def initializeWidgets() -> None:
+    initializeRoot()
+    initializeIcon("turtleIcon.ico")
+    initializeInsert()
+    initializeCaret()
 
-    configureRoot()
-    configureIcon()
-    configureFullscreen()
-    configureText()
-    configureCaret()
-    configureLineNumbers()
-    configureFooter()
+    frame.ShowFullScreen(cfg.get(bool, "root", "fullscreen", throw = True))
+api.addToAPI("widgets", initializeWidgets)
 
-def configureRoot() -> None:
-    root.geometry(str(cfg.get(int, "root", "width")) 
-                    + "x" + str(cfg.get(int, "root", "height")))
+def initializeRoot() -> None:
+    frame.SetSize(cfg.get(int, "root", "width", throw = True), 
+                  cfg.get(int, "root", "height", throw = True))
+api.addToAPI("widgets", initializeRoot)
 
-def configureIcon() -> None:
-    try:
-        root.iconbitmap("data/turtleicon.ico")
-    except Exception as e:
-        # I am using 'except Exception' here because 
-        # invalid icon should never crash the program
-        log.error(f"Something went wrong while trying to get the app icon! ({e})")
+def initializeIcon(iconPath: str) -> None:
+    if not isfile(iconPath):
+        log.error(f"Failed to find icon at '{iconPath}'!")
+        return
 
-def configureFullscreen() -> None:
-    isFullscreen = cfg.get(bool, "root", "fullscreen")
-    root.attributes("-fullscreen", isFullscreen)
+    icon = wx.Icon(iconPath, wx.BITMAP_TYPE_ANY)
+    frame.SetIcon(icon)
+api.addToAPI("widgets", initializeIcon)
 
-def configureText() -> None:
-    # text.configure(yscrollcommand = updateTextScroll)
+def initializeInsert() -> None:
+    insert.StyleClearAll()
 
-    textFont = cfg.get(str, "insert", "font")
-    textSize = cfg.get(int, "insert", "fontSize")
+    # Hide default margin
+    insert.SetMarginWidth(1, 0)
 
-    text.configure(
-        bg      = cfg.get(str, "insert", "bgColor"),
-        fg      = cfg.get(str, "insert", "fgColor"),
-        font    = (textFont, textSize),
-        relief  = cfg.get(str, "insert", "relief"),
-        wrap    = 'none'
+    insert.StyleSetBackground(
+        wx.stc.STC_STYLE_DEFAULT, 
+        wx.Colour(cfg.get(str, "insert", "bg", throw = True))
     )
 
-def configureCaret() -> None:
-    text.configure(
-        insertbackground    = cfg.get(str, "caret", "color"),
-        insertwidth         = cfg.get(int, "caret", "width")
+    insert.StyleSetForeground(
+        wx.stc.STC_STYLE_DEFAULT, 
+        wx.Colour(cfg.get(str, "insert", "fg", throw = True))
     )
 
-def configureLineNumbers() -> None:
-    if lineNumPos >= 0:
-        lines.configure(
-            bg      = cfg.get(str, "lineNumbers", "bgColor"),
-            fg      = cfg.get(str, "lineNumbers", "fgColor"),
-            font    = (textFont, textSize),
-            relief  = cfg.get(str, "lineNumbers", "relief"),
-            wrap    = 'none'
+    insert.StyleSetFont(
+        wx.stc.STC_STYLE_DEFAULT, 
+        wx.Font(
+            pointSize = cfg.get(int, "insert", "fontSize", throw = True),
+            family = wx.FONTFAMILY_TELETYPE,
+            style = wx.FONTSTYLE_NORMAL,
+            weight = wx.FONTWEIGHT_NORMAL,
+            underline = False,
         )
+    )
 
-def configureFooter() -> None:
-    pass
-    # if footer:
-    #     footer.configure(anchor='w')
-    #     footer.configure(bg=userConfig['footerBg'],
-    #                     fg=userConfig['footerFg'],
-    #                     font=(userConfig['footerFont'], userConfig['footerFontSize']),
-    #                     relief=userConfig['footerRelief'])
-    #     updateFooter()
+    insert.Refresh()
+api.addToAPI("widgets", initializeInsert)
 
-def placeWidgets():
-    root.rowconfigure(0, weight=1)
+def initializeCaret() -> None:
+    insert.SetCaretForeground(
+        wx.Colour(cfg.get(str, "caret", "color", throw = True))
+    )
 
-    if lineNumPos >= 0:
-        root.columnconfigure(lineNumPos, weight = 0)
-        root.columnconfigure(1 - lineNumPos, weight = 1)
+    insert.SetCaretWidth(
+        cfg.get(int, "caret", "width", throw = True)
+    )
+api.addToAPI("widgets", initializeCaret)
 
-        text.grid(
-            row = 0, 
-            column = 1 - lineNumPos, 
-            sticky='news'
-        )
+def setTitle(title: str) -> None:
+    frame.SetTitle(title)
+api.addToAPI("widgets", setTitle)
 
-        lines.grid(
-            row = 0, 
-            column = lineNumPos, 
-            sticky='ns'
-        )
-
-    # if userConfig['enableFooter']:
-    #     w.footer.grid(row=1, column=0, columnspan=2, sticky='news')
+def placeWidgets() -> None:
+    grid.Add(insert, (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALL)
+    grid.AddGrowableCol(0)
+    grid.AddGrowableRow(0)
+    panel.SetSizerAndFit(grid)
+    panel.Layout()
 

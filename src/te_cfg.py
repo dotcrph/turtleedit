@@ -1,5 +1,5 @@
-import te_io as io
 import te_logging as log
+import te_info as info
 
 import json
 import os.path
@@ -26,8 +26,6 @@ config: dict[str, jsonT] = {
         "width": 3
     }
 }
-
-appVersion: str = "turtleEdit 2.0.0"
 
 def loadConfig(configPath: str) -> None:
     """
@@ -93,8 +91,8 @@ def loadConfig(configPath: str) -> None:
     except UnicodeDecodeError as e:
         log.error(f"{configPath} is not a valid Unicode file! ({e})")
     except Exception as e:
-        if isinstance(e, tuple(io.ioErrors.keys())):
-            log.error(io.ioErrors[type(e)].format(configDir) 
+        if isinstance(e, tuple(info.ioErrors.keys())):
+            log.error(info.ioErrors[type(e)].format(configPath) 
                      + f"({e})")
         else:
             raise
@@ -187,5 +185,6 @@ def get[T](
         return None
 
 if __name__ == "__main__":
-    setupConfig()
+    loadConfig(input("Config path: "))
     print(config)
+

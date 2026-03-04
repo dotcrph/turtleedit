@@ -1,6 +1,7 @@
 import te_api as api
 import te_cfg as cfg
 import te_logging as log
+import te_info as info
 
 import wx
 import wx.stc
@@ -9,7 +10,7 @@ from os.path import isfile
 app = wx.App(False)
 api.addToAPI("widgets", app)
 
-frame = wx.Frame(None, title = cfg.appVersion)
+frame = wx.Frame(None, title = info.appNameVersion)
 api.addToAPI("widgets", frame)
 
 panel = wx.Panel(frame)
@@ -84,8 +85,11 @@ def initializeCaret() -> None:
     )
 api.addToAPI("widgets", initializeCaret)
 
-def setTitle(title: str) -> None:
-    frame.SetTitle(title)
+def setTitle(title: str = "") -> None:
+    if (not title):
+        frame.SetTitle(info.appName)
+    else:
+        frame.SetTitle(f"{info.appName} - {title}")
 api.addToAPI("widgets", setTitle)
 
 def placeWidgets() -> None:

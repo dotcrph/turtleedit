@@ -1,4 +1,4 @@
-from typing import Any, final, override
+from typing import Any
 from varname.core import argname
 
 # That is the most horrendous code i have ever written

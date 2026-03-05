@@ -40,7 +40,7 @@ def openFile(_ = None) -> bool:
     log.info(f"Opening file '{openDir}'")
 
     try:
-        with open(openDir, "w", encoding="utf-8") as file:
+        with open(openDir, "r+", encoding="utf-8") as file:
             fileContent: str = file.read()
     except Exception as e:
         if type(e) not in info.ioErrors.keys():

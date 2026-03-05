@@ -35,7 +35,7 @@ def loadConfig(configPath: str) -> None:
     global config
 
     if not os.path.exists(configPath):
-        log.warn("Failed to find config in '{configPath}', using default config")
+        log.warn(f"Failed to find config in '{configPath}', using default config")
         return
 
     try:

@@ -87,7 +87,7 @@ def saveAsFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(openDir) 
+        log.error(info.ioErrors[type(e)].format(saveAsDir) 
                  + f"({e})")
         return False
 
@@ -116,7 +116,7 @@ def saveFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(openDir) 
+        log.error(info.ioErrors[type(e)].format(openFileDir) 
                  + f"({e})")
         return False
 

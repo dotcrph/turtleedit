@@ -15,7 +15,7 @@ api.addToAPI("io", lastOpenDir)
 lastSaveAsDir: str = ""
 api.addToAPI("io", lastSaveAsDir)
 
-fileWildcard: str = "All files | *.*"
+fileWildcard: str = "All files|*.*"
 api.addToAPI("io", fileWildcard)
 
 def openFile(_ = None) -> bool:
@@ -40,10 +40,10 @@ def openFile(_ = None) -> bool:
     log.info(f"Opening file '{openDir}'")
 
     try:
-        with open(openDir, "rw", encoding="utf-8") as file:
+        with open(openDir, "w", encoding="utf-8") as file:
             fileContent: str = file.read()
     except Exception as e:
-        if not isinstance(e, tuple(info.ioErrors.keys())):
+        if type(e) not in info.ioErrors.keys():
             raise
 
         log.error(info.ioErrors[type(e)].format(openDir) 
@@ -82,10 +82,10 @@ def saveAsFile(_ = None) -> bool:
     try:
         widgets.insert.SaveFile(saveAsDir)
     except Exception as e:
-        if not isinstance(e, tuple(info.ioErrors.keys())):
+        if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(saveAsDir) 
+        log.error(info.ioErrors[type(e)].format(openDir) 
                  + f"({e})")
         return False
 
@@ -111,10 +111,10 @@ def saveFile(_ = None) -> bool:
     try:
         widgets.insert.SaveFile(openFileDir)
     except Exception as e:
-        if not isinstance(e, tuple(info.ioErrors.keys())):
+        if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(openFileDir) 
+        log.error(info.ioErrors[type(e)].format(openDir) 
                  + f"({e})")
         return False
 

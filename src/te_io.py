@@ -6,6 +6,8 @@ import te_logging as log
 import wx
 import wx.stc
 
+from os.path import dirname
+
 openFileDir: str = ""
 api.addToAPI("io", openFileDir)
 
@@ -54,7 +56,7 @@ def openFile(_ = None) -> bool:
     widgets.insert.SetSavePoint()
 
     widgets.setTitle(openDir)
-    lastOpenDir = openDir
+    lastOpenDir = dirname(openDir) # This strips the filename from the path
     openFileDir = openDir
 
     fileDialog.Destroy()
@@ -92,7 +94,7 @@ def saveAsFile(_ = None) -> bool:
     widgets.insert.SetSavePoint()
 
     widgets.setTitle(saveAsDir)
-    lastSaveAsDir = saveAsDir
+    lastSaveAsDir = dirname(saveAsDir)
     openFileDir = saveAsDir
 
     fileDialog.Destroy()

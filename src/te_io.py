@@ -8,16 +8,16 @@ import wx.stc
 
 from os.path import dirname
 
-openFileDir: str = ""
+openFileDir: api.Mutable[str] = api.Mutable("")
 api.addToAPI("io", openFileDir)
 
-lastOpenDir: str = ""
+lastOpenDir: api.Mutable[str] = api.Mutable("")
 api.addToAPI("io", lastOpenDir)
 
-lastSaveAsDir: str = ""
+lastSaveAsDir: api.Mutable[str] = api.Mutable("")
 api.addToAPI("io", lastSaveAsDir)
 
-fileWildcard: str = "All files|*.*"
+fileWildcard: api.Mutable[str] = api.Mutable("All files|*.*")
 api.addToAPI("io", fileWildcard)
 
 def openFile(_ = None) -> bool:
@@ -29,9 +29,9 @@ def openFile(_ = None) -> bool:
     fileDialog = wx.FileDialog(
         widgets.frame,
         message = "Open file",
-        defaultDir = lastOpenDir,
+        defaultDir = lastOpenDir.v,
         defaultFile = "",
-        wildcard = fileWildcard,
+        wildcard = fileWildcard.v,
         style = wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_SHOW_HIDDEN 
     )
 
@@ -61,8 +61,8 @@ def openFile(_ = None) -> bool:
     widgets.insert.SetSavePoint()
 
     widgets.setTitle(openDir)
-    lastOpenDir = dirname(openDir) # This strips the filename from the path
-    openFileDir = openDir
+    lastOpenDir.v = dirname(openDir) # This strips the filename from the path
+    openFileDir.v = openDir
 
     fileDialog.Destroy()
     return True
@@ -74,9 +74,9 @@ def saveAsFile(_ = None) -> bool:
     fileDialog = wx.FileDialog(
         widgets.frame,
         message = "Save file as",
-        defaultDir = lastSaveAsDir,
+        defaultDir = lastSaveAsDir.v,
         defaultFile = "",
-        wildcard = fileWildcard,
+        wildcard = fileWildcard.v,
         style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT | wx.FD_SHOW_HIDDEN
     )
 
@@ -84,7 +84,7 @@ def saveAsFile(_ = None) -> bool:
         return False
 
     saveAsDir: str = fileDialog.GetPath()
-    log.info(f"Saving file '{openFileDir}' as '{saveAsDir}'")
+    log.info(f"Saving file '{openFileDir.v}' as '{saveAsDir}'")
 
     try:
         widgets.insert.SaveFile(saveAsDir)
@@ -104,8 +104,8 @@ def saveAsFile(_ = None) -> bool:
     widgets.insert.SetSavePoint()
 
     widgets.setTitle(saveAsDir)
-    lastSaveAsDir = dirname(saveAsDir)
-    openFileDir = saveAsDir
+    lastSaveAsDir.v = dirname(saveAsDir)
+    openFileDir.v = saveAsDir
 
     fileDialog.Destroy()
 
@@ -115,18 +115,18 @@ api.addToAPI("io", saveAsFile)
 def saveFile(_ = None) -> bool:
     global openFileDir
 
-    if not openFileDir:
+    if not openFileDir.v:
         return saveAsFile()
 
-    log.info(f"Saving file '{openFileDir}'")
+    log.info(f"Saving file '{openFileDir.v}'")
 
     try:
-        widgets.insert.SaveFile(openFileDir)
+        widgets.insert.SaveFile(openFileDir.v)
     except Exception as e:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        errormsg = info.ioErrors[type(e)].format(openFileDir)
+        errormsg = info.ioErrors[type(e)].format(openFileDir.v)
         wx.MessageBox(
             f"Oops, something went wrong while saving the file! ({errormsg})", 
             "Oops!", 
@@ -147,7 +147,7 @@ def newFile(_ = None) -> bool:
         return False
 
     widgets.insert.ClearAll()
-    openFileDir = ""
+    openFileDir.v = ""
 
     return True
 api.addToAPI("io", newFile)

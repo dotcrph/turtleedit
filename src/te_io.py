@@ -48,8 +48,13 @@ def openFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(openDir) 
-                 + f"({e})")
+        errormsg = info.ioErrors[type(e)].format(openDir)
+        wx.MessageBox(
+            f"Oops, something went wrong while opening the file! ({errormsg})", 
+            "Oops!", 
+            wx.OK | wx.ICON_ERROR | wx.CENTRE, 
+            widgets.frame)
+        log.error(errormsg + f" ({e})")
         return False
 
     widgets.insert.SetValue(fileContent)
@@ -87,8 +92,13 @@ def saveAsFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(saveAsDir) 
-                 + f"({e})")
+        errormsg = info.ioErrors[type(e)].format(saveAsDir)
+        wx.MessageBox(
+            f"Oops, something went wrong while saving the file! ({errormsg})", 
+            "Oops!", 
+            wx.OK | wx.ICON_ERROR | wx.CENTRE, 
+            widgets.frame)
+        log.error(errormsg + f" ({e})")
         return False
 
     widgets.insert.SetSavePoint()
@@ -116,8 +126,13 @@ def saveFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        log.error(info.ioErrors[type(e)].format(openFileDir) 
-                 + f"({e})")
+        errormsg = info.ioErrors[type(e)].format(openFileDir)
+        wx.MessageBox(
+            f"Oops, something went wrong while saving the file! ({errormsg})", 
+            "Oops!", 
+            wx.OK | wx.ICON_ERROR | wx.CENTRE, 
+            widgets.frame)
+        log.error(errormsg + f" ({e})")
         return False
 
     widgets.insert.SetSavePoint()

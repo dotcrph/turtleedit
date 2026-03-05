@@ -10,7 +10,7 @@ from os.path import isfile
 app = wx.App(False)
 api.addToAPI("widgets", app)
 
-frame = wx.Frame(None, title = info.appNameVersion)
+frame = wx.Frame(None, title = info.appNameVersion.v)
 api.addToAPI("widgets", frame)
 
 panel = wx.Panel(frame)
@@ -87,9 +87,9 @@ api.addToAPI("widgets", initializeCaret)
 
 def setTitle(title: str = "") -> None:
     if (not title):
-        frame.SetTitle(info.appName)
+        frame.SetTitle(info.appName.v)
     else:
-        frame.SetTitle(f"{info.appName} - {title}")
+        frame.SetTitle(f"{info.appName.v} - {title}")
 api.addToAPI("widgets", setTitle)
 
 def placeWidgets() -> None:

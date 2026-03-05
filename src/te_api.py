@@ -1,7 +1,11 @@
-from typing import Any
+from typing import Any, final, override
 from varname.core import argname
 
 # That is the most horrendous code i have ever written
+
+class Mutable[T]:
+    def __init__(self, v: T) -> None:
+        self.v: T = v
 
 class teAPIClass:
     pass

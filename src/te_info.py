@@ -6,7 +6,7 @@ api.addToAPI("info", appName)
 appVersion: api.Mutable[str] = api.Mutable("2.0.0")
 api.addToAPI("info", appVersion)
 
-appNameVersion: api.Mutable[str] = api.Mutable(f"{appName.v} {appVersion}")
+appNameVersion: api.Mutable[str] = api.Mutable(f"{appName.v} {appVersion.v}")
 api.addToAPI("info", appNameVersion)
 
 ioErrors = {

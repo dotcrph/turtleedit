@@ -6,9 +6,16 @@ from sys import path
 from os import getcwd, chdir
 from os.path import isfile, join
 
-pluginsDir      = "plugins"
-initFilename    = "init.py"
-initDir         = join(pluginsDir, initFilename)
+# NOTE: I am intentionally not wrapping vars below in Mutable
+
+pluginsDir = "plugins"
+api.addToAPI("plugins", pluginsDir)
+
+initFilename = "init.py"
+api.addToAPI("plugins", initFilename)
+
+initDir = join(pluginsDir, initFilename)
+api.addToAPI("plugins", initDir)
 
 def loadPlugins() -> None:
     if not isfile(initDir):

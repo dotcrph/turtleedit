@@ -167,7 +167,7 @@ def confirmDirty(widget: wx.stc.StyledTextCtrl) -> bool:
     confirmationDialog = wx.MessageDialog(
         widgets.panel, 
         "Your file has unsaved changes. Do you want to continue?", 
-        "Confirm", 
+        "Watch out!", 
         wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION
     )
 

@@ -17,7 +17,7 @@ api.addToAPI("io", lastOpenDir)
 lastSaveAsDir: api.Mutable[str] = api.Mutable("")
 api.addToAPI("io", lastSaveAsDir)
 
-fileWildcard: api.Mutable[str] = api.Mutable("All files|*.*")
+fileWildcard: api.Mutable[str] = api.Mutable("All files|*")
 api.addToAPI("io", fileWildcard)
 
 def openFile(_ = None) -> bool:

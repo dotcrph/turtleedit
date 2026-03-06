@@ -28,6 +28,9 @@ def initializeWidgets() -> None:
     initializeInsert()
     initializeCaret()
 
+    insert.StyleClearAll()
+    insert.Refresh()
+
     frame.ShowFullScreen(cfg.get(bool, "root", "fullscreen", throw = True))
 api.addToAPI("widgets", initializeWidgets)
 
@@ -46,8 +49,6 @@ def initializeIcon(iconPath: str) -> None:
 api.addToAPI("widgets", initializeIcon)
 
 def initializeInsert() -> None:
-    insert.StyleClearAll()
-
     # Hide default margin
     insert.SetMarginWidth(1, 0)
 
@@ -71,8 +72,6 @@ def initializeInsert() -> None:
             underline = False,
         )
     )
-
-    insert.Refresh()
 api.addToAPI("widgets", initializeInsert)
 
 def initializeCaret() -> None:

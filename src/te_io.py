@@ -48,7 +48,7 @@ def openFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        errormsg = info.ioErrors[type(e)].format(openDir)
+        errormsg = info.ioErrors[type(e)].format(filename = openDir)
         wx.MessageBox(
             f"Oops, something went wrong while opening the file! ({errormsg})", 
             "Oops!", 
@@ -92,7 +92,7 @@ def saveAsFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        errormsg = info.ioErrors[type(e)].format(saveAsDir)
+        errormsg = info.ioErrors[type(e)].format(filename = saveAsDir)
         wx.MessageBox(
             f"Oops, something went wrong while saving the file! ({errormsg})", 
             "Oops!", 
@@ -126,7 +126,7 @@ def saveFile(_ = None) -> bool:
         if type(e) not in info.ioErrors.keys():
             raise
 
-        errormsg = info.ioErrors[type(e)].format(openFileDir.v)
+        errormsg = info.ioErrors[type(e)].format(filename = openFileDir.v)
         wx.MessageBox(
             f"Oops, something went wrong while saving the file! ({errormsg})", 
             "Oops!", 

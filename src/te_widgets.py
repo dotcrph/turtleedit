@@ -49,6 +49,9 @@ def initializeIcon(iconPath: str) -> None:
 api.addToAPI("widgets", initializeIcon)
 
 def initializeInsert() -> None:
+    fontFromCFG: str | None = cfg.get(str, "insert", "font")
+    font: str = fontFromCFG if fontFromCFG else ""
+
     # Hide default margin
     insert.SetMarginWidth(1, 0)
 
@@ -70,6 +73,8 @@ def initializeInsert() -> None:
             style = wx.FONTSTYLE_NORMAL,
             weight = wx.FONTWEIGHT_NORMAL,
             underline = False,
+            faceName = font,
+            encoding = wx.FONTENCODING_UTF8
         )
     )
 api.addToAPI("widgets", initializeInsert)

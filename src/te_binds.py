@@ -44,7 +44,7 @@ def onQuit(_: wx.CommandEvent) -> None:
     if io.quitWithSave():
         widgets.insert.Destroy()
 
-def onFrameResize(event) -> None:
+def onFrameResize(event: wx.Event) -> None:
     # This is needed because STC draws horizontal 
     # scrollbar based on a cached width
 

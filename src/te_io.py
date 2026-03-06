@@ -50,7 +50,7 @@ def openFile(_ = None) -> bool:
 
         errormsg = info.ioErrors[type(e)].format(filename = openDir)
         wx.MessageBox(
-            f"Oops, something went wrong while opening the file! ({errormsg})", 
+            f"Oops, something went wrong while opening the file!\n\n{errormsg}", 
             "Oops!", 
             wx.OK | wx.ICON_ERROR | wx.CENTRE, 
             widgets.frame)
@@ -87,14 +87,16 @@ def saveAsFile(_ = None) -> bool:
     log.info(f"Saving file '{openFileDir.v}' as '{saveAsDir}'")
 
     try:
-        widgets.insert.SaveFile(saveAsDir)
+        # NOTE: I am not using SaveFile() because I want custom error messages
+        with open(saveAsDir, "w", encoding="utf-8") as file:
+            file.write(widgets.insert.GetValue())
     except Exception as e:
         if type(e) not in info.ioErrors.keys():
             raise
 
         errormsg = info.ioErrors[type(e)].format(filename = saveAsDir)
         wx.MessageBox(
-            f"Oops, something went wrong while saving the file! ({errormsg})", 
+            f"Oops, something went wrong while saving the file!\n\n{errormsg}", 
             "Oops!", 
             wx.OK | wx.ICON_ERROR | wx.CENTRE, 
             widgets.frame)
@@ -121,14 +123,16 @@ def saveFile(_ = None) -> bool:
     log.info(f"Saving file '{openFileDir.v}'")
 
     try:
-        widgets.insert.SaveFile(openFileDir.v)
+        # NOTE: I am not using SaveFile() because I want custom error messages
+        with open(openFileDir.v, "w", encoding="utf-8") as file:
+            file.write(widgets.insert.GetValue())
     except Exception as e:
         if type(e) not in info.ioErrors.keys():
             raise
 
         errormsg = info.ioErrors[type(e)].format(filename = openFileDir.v)
         wx.MessageBox(
-            f"Oops, something went wrong while saving the file! ({errormsg})", 
+            f"Oops, something went wrong while saving the file!\n\n{errormsg}", 
             "Oops!", 
             wx.OK | wx.ICON_ERROR | wx.CENTRE, 
             widgets.frame)

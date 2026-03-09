@@ -73,8 +73,7 @@ def initializeInsert() -> None:
             style = wx.FONTSTYLE_NORMAL,
             weight = wx.FONTWEIGHT_NORMAL,
             underline = False,
-            faceName = font,
-            encoding = wx.FONTENCODING_UTF8
+            faceName = font
         )
     )
 api.addToAPI("widgets", initializeInsert)

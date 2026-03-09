@@ -1,5 +1,6 @@
 import te_logging as log
 import te_info as info
+import te_api as api
 
 import json
 import os.path
@@ -98,6 +99,7 @@ def loadConfig(configPath: str) -> None:
             raise
 
     log.info("Finished loading config with errors")
+api.addToAPI("cfg", loadConfig)
 
 @overload
 def get[T](
@@ -183,6 +185,7 @@ def get[T](
             raise KeyError(errormsg)
 
         return None
+api.addToAPI("cfg", get)
 
 if __name__ == "__main__":
     loadConfig(input("Config path: "))

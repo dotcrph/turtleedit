@@ -1,0 +1,19 @@
+{
+    "root": {
+        "width": 1600,
+        "height": 900,
+        "fullscreen": false
+    },
+
+    "insert": {
+        "bg": "#2B2D42",
+        "fg": "#EDF2F4",
+        "font": "CaskaydiaMono NF",
+        "fontSize": 16
+    },
+
+    "caret": {
+        "color": "#EF233C",
+        "width": 5
+    }
+}

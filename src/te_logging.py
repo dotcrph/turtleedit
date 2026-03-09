@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 import os.path
 
-logsDir: api.Mutable[str] = api.Mutable("logs")
+logsDir: api.Mutable[str] = api.Mutable(os.path.join(os.getcwd(), "logs"))
 api.addToAPI("log", logsDir)
 
 logFilename: api.Mutable[str]                                                 \

@@ -2,6 +2,7 @@ import te_api as api
 import te_widgets as widgets
 import te_info as info
 import te_logging as log
+import te_events as events
 
 import wx
 import wx.stc
@@ -63,6 +64,11 @@ def openFile(_ = None) -> bool:
     widgets.setTitle(openDir)
     lastOpenDir.v = dirname(openDir) # This strips the filename from the path
     openFileDir.v = openDir
+
+    wx.PostEvent(
+        widgets.frame, 
+        events.eOpenFileDirChanged(newDir = openFileDir.v)
+    )
 
     fileDialog.Destroy()
     return True

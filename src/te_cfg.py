@@ -99,7 +99,7 @@ def loadConfig(configPath: str) -> None:
             raise
 
     log.info("Finished loading config with errors")
-api.addToAPI("cfg", loadConfig)
+api.addToAPI("cfg", "loadConfig", loadConfig)
 
 @overload
 def get[T](
@@ -185,7 +185,7 @@ def get[T](
             raise KeyError(errormsg)
 
         return None
-api.addToAPI("cfg", get)
+api.addToAPI("cfg", "get", get)
 
 if __name__ == "__main__":
     loadConfig(input("Config path: "))

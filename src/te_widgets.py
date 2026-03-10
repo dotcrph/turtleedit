@@ -5,7 +5,9 @@ import te_info as info
 
 import wx
 import wx.stc
-from os.path import isfile
+import sys
+import os
+import os.path
 
 app = wx.App(False)
 api.addToAPI("widgets", "app", app)
@@ -24,7 +26,7 @@ api.addToAPI("widgets", "insert", insert)
 
 def initializeWidgets() -> None:
     initializeRoot()
-    initializeIcon("turtleIcon.ico")
+    initializeIcon("turtleicon.ico")
     initializeInsert()
     initializeCaret()
 
@@ -40,11 +42,17 @@ def initializeRoot() -> None:
 api.addToAPI("widgets", "initializeRoot", initializeRoot)
 
 def initializeIcon(iconPath: str) -> None:
-    if not isfile(iconPath):
-        log.error(f"Failed to find icon at '{iconPath}'!")
+    # This is needed because pyinstaller extracts all of the bundled assets 
+    # in a temporary folder and you cannot retrieve them in a normal way
+    iconPathFull: str = os.path.join(sys._MEIPASS, iconPath)                  \
+                        if hasattr(sys, "_MEIPASS")                           \
+                        else os.path.join(os.getcwd(), iconPath)
+
+    if not os.path.isfile(iconPathFull):
+        log.error(f"Failed to find icon at '{iconPathFull}'!")
         return
 
-    icon = wx.Icon(iconPath, wx.BITMAP_TYPE_ANY)
+    icon = wx.Icon(iconPathFull, wx.BITMAP_TYPE_ANY)
     frame.SetIcon(icon)
 api.addToAPI("widgets", "initializeIcon", initializeIcon)
 

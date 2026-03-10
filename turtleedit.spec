@@ -1,11 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-
 a = Analysis(
-    ['turtleedit.py'],
+    ["src/main.py"],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[("data/turtleicon.ico", "data")],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -22,7 +21,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='turtleedit',
+    name="turtleedit",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -35,5 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['turtleicon.ico'],
+    icon=["data/turtleicon.ico"],
 )

@@ -9,13 +9,13 @@ from os.path import isfile, join
 # NOTE: I am intentionally not wrapping vars below in Mutable
 
 pluginsDir = "plugins"
-api.addToAPI("plugins", pluginsDir)
+api.addToAPI("plugins", "pluginsDir", pluginsDir)
 
 initFilename = "init.py"
-api.addToAPI("plugins", initFilename)
+api.addToAPI("plugins", "initFilename", initFilename)
 
 initDir = join(pluginsDir, initFilename)
-api.addToAPI("plugins", initDir)
+api.addToAPI("plugins", "initDir", initDir)
 
 def loadPlugins() -> None:
     if not isfile(initDir):

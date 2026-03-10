@@ -8,19 +8,19 @@ import wx.stc
 from os.path import isfile
 
 app = wx.App(False)
-api.addToAPI("widgets", app)
+api.addToAPI("widgets", "app", app)
 
 frame = wx.Frame(None, title = info.appNameVersion.v)
-api.addToAPI("widgets", frame)
+api.addToAPI("widgets", "frame", frame)
 
 panel = wx.Panel(frame)
-api.addToAPI("widgets", panel)
+api.addToAPI("widgets", "panel", panel)
 
 grid = wx.GridBagSizer(vgap = 0, hgap = 0)
-api.addToAPI("widgets", grid)
+api.addToAPI("widgets", "grid", grid)
 
 insert = wx.stc.StyledTextCtrl(panel, style = wx.TE_MULTILINE)
-api.addToAPI("widgets", insert)
+api.addToAPI("widgets", "insert", insert)
 
 def initializeWidgets() -> None:
     initializeRoot()
@@ -32,12 +32,12 @@ def initializeWidgets() -> None:
     insert.Refresh()
 
     frame.ShowFullScreen(cfg.get(bool, "root", "fullscreen", throw = True))
-api.addToAPI("widgets", initializeWidgets)
+api.addToAPI("widgets", "initializeWidgets", initializeWidgets)
 
 def initializeRoot() -> None:
     frame.SetSize(cfg.get(int, "root", "width", throw = True), 
                   cfg.get(int, "root", "height", throw = True))
-api.addToAPI("widgets", initializeRoot)
+api.addToAPI("widgets", "initializeRoot", initializeRoot)
 
 def initializeIcon(iconPath: str) -> None:
     if not isfile(iconPath):
@@ -46,7 +46,7 @@ def initializeIcon(iconPath: str) -> None:
 
     icon = wx.Icon(iconPath, wx.BITMAP_TYPE_ANY)
     frame.SetIcon(icon)
-api.addToAPI("widgets", initializeIcon)
+api.addToAPI("widgets", "initializeIcon", initializeIcon)
 
 def initializeInsert() -> None:
     fontFromCFG: str | None = cfg.get(str, "insert", "font")
@@ -76,7 +76,7 @@ def initializeInsert() -> None:
             faceName = font
         )
     )
-api.addToAPI("widgets", initializeInsert)
+api.addToAPI("widgets", "initializeInsert", initializeInsert)
 
 def initializeCaret() -> None:
     insert.SetCaretForeground(
@@ -86,14 +86,14 @@ def initializeCaret() -> None:
     insert.SetCaretWidth(
         cfg.get(int, "caret", "width", throw = True)
     )
-api.addToAPI("widgets", initializeCaret)
+api.addToAPI("widgets", "initializeCaret", initializeCaret)
 
 def setTitle(title: str = "") -> None:
     if (not title):
         frame.SetTitle(info.appName.v)
     else:
         frame.SetTitle(f"{info.appName.v} - {title}")
-api.addToAPI("widgets", setTitle)
+api.addToAPI("widgets", "setTitle", setTitle)
 
 def placeWidgets() -> None:
     grid.Add(insert, (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALL)

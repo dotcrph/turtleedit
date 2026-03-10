@@ -5,7 +5,7 @@ import te_api as api
 import wx
 
 binds: list[wx.AcceleratorEntry] = []
-api.addToAPI("binds", binds)
+api.addToAPI("binds", "binds", binds)
 
 def initializeEventHandlers() -> None:
     # On frame resize
@@ -38,7 +38,7 @@ def initializeBinds() -> None:
 def reloadBinds() -> None:
     acceleratorTable = wx.AcceleratorTable(binds)
     widgets.frame.SetAcceleratorTable(acceleratorTable)
-api.addToAPI("binds", reloadBinds)
+api.addToAPI("binds", "reloadBinds", reloadBinds)
 
 def onQuit(_: wx.CommandEvent) -> None:
     if io.quitWithSave():

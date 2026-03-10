@@ -1,13 +1,13 @@
 import te_api as api
 
 appName: api.Mutable[str] = api.Mutable("turtleEdit")
-api.addToAPI("info", appName)
+api.addToAPI("info", "appName", appName)
 
 appVersion: api.Mutable[str] = api.Mutable("2.0.0")
-api.addToAPI("info", appVersion)
+api.addToAPI("info", "appVersion", appVersion)
 
 appNameVersion: api.Mutable[str] = api.Mutable(f"{appName.v} {appVersion.v}")
-api.addToAPI("info", appNameVersion)
+api.addToAPI("info", "appNameVersion", appNameVersion)
 
 ioErrors = {
     FileNotFoundError: "Failed to find \"{filename}\"!",
@@ -15,5 +15,5 @@ ioErrors = {
     IsADirectoryError: "\"{filename}\" is a directory, expected file!",
     OSError: "Something went wrong while operating on \"{filename}\"!",
 }
-api.addToAPI("info", ioErrors)
+api.addToAPI("info", "ioErrors", ioErrors)
 

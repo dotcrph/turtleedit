@@ -10,16 +10,16 @@ import wx.stc
 from os.path import dirname
 
 openFileDir: api.Mutable[str] = api.Mutable("")
-api.addToAPI("io", openFileDir)
+api.addToAPI("io", "openFileDir", openFileDir)
 
 lastOpenDir: api.Mutable[str] = api.Mutable("")
-api.addToAPI("io", lastOpenDir)
+api.addToAPI("io", "lastOpenDir", lastOpenDir)
 
 lastSaveAsDir: api.Mutable[str] = api.Mutable("")
-api.addToAPI("io", lastSaveAsDir)
+api.addToAPI("io", "lastSaveAsDir", lastSaveAsDir)
 
 fileWildcard: api.Mutable[str] = api.Mutable("All files|*")
-api.addToAPI("io", fileWildcard)
+api.addToAPI("io", "fileWildcard", fileWildcard)
 
 def openFile(_ = None) -> bool:
     global lastOpenDir, openFileDir
@@ -72,7 +72,7 @@ def openFile(_ = None) -> bool:
 
     fileDialog.Destroy()
     return True
-api.addToAPI("io", openFile)
+api.addToAPI("io", "openFile", openFile)
 
 def saveAsFile(_ = None) -> bool:
     global lastSaveAsDir, openFileDir
@@ -118,7 +118,7 @@ def saveAsFile(_ = None) -> bool:
     fileDialog.Destroy()
 
     return True
-api.addToAPI("io", saveAsFile)
+api.addToAPI("io", "saveAsFile", saveAsFile)
 
 def saveFile(_ = None) -> bool:
     global openFileDir
@@ -148,7 +148,7 @@ def saveFile(_ = None) -> bool:
     widgets.insert.SetSavePoint()
 
     return True
-api.addToAPI("io", saveFile)
+api.addToAPI("io", "saveFile", saveFile)
 
 def newFile(_ = None) -> bool:
     global openFileDir
@@ -160,7 +160,7 @@ def newFile(_ = None) -> bool:
     openFileDir.v = ""
 
     return True
-api.addToAPI("io", newFile)
+api.addToAPI("io", "newFile", newFile)
 
 def quitWithSave(_ = None) -> bool:
     if not confirmDirty(widgets.insert):
@@ -168,7 +168,7 @@ def quitWithSave(_ = None) -> bool:
 
     widgets.frame.Close()
     return True
-api.addToAPI("io", quitWithSave)
+api.addToAPI("io", "quitWithSave", quitWithSave)
 
 def confirmDirty(widget: wx.stc.StyledTextCtrl) -> bool:
     if not widget.GetModify():
@@ -185,5 +185,5 @@ def confirmDirty(widget: wx.stc.StyledTextCtrl) -> bool:
     confirmationDialog.Destroy()
 
     return False if res != wx.ID_YES else True
-api.addToAPI("io", confirmDirty)
+api.addToAPI("io", "confirmDirty", confirmDirty)
 

@@ -4,7 +4,7 @@ a = Analysis(
     ["src/main.py"],
     pathex=[],
     binaries=[],
-    datas=[("data/turtleicon.ico", "data")],
+    datas=[("data/turtleicon.ico", ".")],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
